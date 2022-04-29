@@ -1,0 +1,105 @@
+{
+  "name": "atcoder-assistant",
+  "displayName": "Atcoder Assistant",
+  "description": "",
+  "version": "0.0.1",
+  "engines": {
+    "vscode": "^1.66.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "activationEvents": [
+    "onCommand:atcoder-assistant.helloWorld",
+    "onCommand:atcoder-assistant.startContest"
+  ],
+  "main": "./extension.js",
+  "contributes": {
+    "properties": {
+      "atcoder-assistant": {
+        "description": "Atcoder contest",
+        "type": "string"
+      }
+    },
+    "commands": [
+      {
+        "command": "atcoder-assistant.helloWorld",
+        "title": "Hello World"
+      },
+      {
+        "command": "atcoder-assistant.startContest",
+        "title": "Start Contest"
+      }
+    ],
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "aca",
+          "title": "AtCoder Assistant",
+          "icon": "media/logo_wh.svg"
+        }
+      ]
+    },
+    "views": {
+      "aca": [
+        {
+          "id": "atcoder-contest",
+          "name": "コンテスト"
+        },
+        {
+          "id": "atcoder-testcases",
+          "name": "テストケース"
+        },
+        {
+          "id": "atcoder-submissions",
+          "name": "提出履歴"
+        },
+        {
+          "id": "atcoder-problems",
+          "name": "問題一覧"
+        }
+      ]
+    },
+    "viewsWelcome": [
+      {
+        "view": "atcoder-contest",
+        "contents": "まだコンテストに参加していません。\n[コンテストを開始](command:atcoder-assistant.startContest)",
+        "when": "!atcoder-assistant.contest"
+      },
+      {
+        "view": "atcoder-contest",
+        "contents": "コンテストに参加中です。\n[コンテストを終了](command:atcoder-assistant.endContest)",
+        "when": "atcoder-assistant.contest"
+      },
+      {
+        "view": "atcoder-testcases",
+        "contents": "テストケースがありません。\n[テストケースを作る](command:atcoder-assistant.createTestcase)"
+      },
+      {
+        "view": "atcoder-submissions",
+        "contents": "まだ提出していません。\n[提出する](command:atcoder-assistant.submit)"
+      },
+      {
+        "view": "atcoder-problems",
+        "contents": "コンテストに参加してください。",
+        "when": "!atcoder-assistant.contest"
+      }
+    ]
+  },
+  "scripts": {
+    "lint": "eslint .",
+    "pretest": "npm run lint",
+    "test": "node ./test/runTest.js"
+  },
+  "devDependencies": {
+    "@types/vscode": "^1.66.0",
+    "@types/glob": "^7.2.0",
+    "@types/mocha": "^9.1.0",
+    "@types/node": "14.x",
+    "eslint": "^8.11.0",
+    "glob": "^7.2.0",
+    "mocha": "^9.2.2",
+    "typescript": "^4.5.5",
+    "@vscode/test-electron": "^2.1.3"
+  }
+}
