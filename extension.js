@@ -23,8 +23,21 @@ function atcoderProblemTreeProvider(contestId) {
           'table td:not([class]) > a'
         ),
       ];
-      return problems.map((problem) => {
-        return new vscode.TreeItem(problem.textContent);
+      let problemId = [
+        ...problemsDom.window.document.querySelectorAll(
+          'table td:first-child > a'
+        ),
+      ];
+      return problems.map((problem, i) => {
+        let treeItem = new vscode.TreeItem(
+          `${problemId[i].textContent}: ${problem.textContent}`
+        );
+        treeItem.command = {
+          command: 'vscode.open',
+          title: 'Open in browser',
+          arguments: [vscode.Uri.parse(`https://atcoder.jp${problem.href}`)],
+        };
+        return treeItem;
       });
     },
   };

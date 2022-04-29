@@ -73,7 +73,7 @@
       },
       {
         "view": "atcoder-testcases",
-        "contents": "テストケースがありません。\n[テストケースを作る](command:atcoder-assistant.createTestcase)"
+        "contents": "テストケースがありません。\n[テストケースを登録する](command:atcoder-assistant.createTestcase)"
       },
       {
         "view": "atcoder-submissions",
