@@ -1,7 +1,7 @@
 const vscode = require('vscode');
 const jsdom = require('jsdom');
 const { JSDOM } = jsdom;
-const got = require('node-fetch');
+const got = require('got');
 
 function atcoderProblemTreeProvider(contestId) {
   return {
@@ -19,9 +19,7 @@ function atcoderProblemTreeProvider(contestId) {
           'table td:not([class]) > a'
         ),
       ];
-      console.log(problems);
       return problems.map((problem) => {
-        vscode.window.showInformationMessage(problem.textContent);
         return new vscode.TreeItem(problem.textContent);
       });
     },
