@@ -1,12 +1,29 @@
 const vscode = require('vscode');
+const jsdom = require('jsdom');
+const { JSDOM } = jsdom;
+const got = require('node-fetch');
 
-function atcoderProblemTreeProvider() {
+function atcoderProblemTreeProvider(contestId) {
   return {
     getTreeItem: (element) => {
       return element;
     },
-    getChildren: () => {
-      return [new vscode.TreeItem('Hello')];
+    getChildren: async () => {
+      const response = await got(
+        `https://atcoder.jp/contests/${contestId}/tasks`
+      );
+      const htmlString = response.body;
+      const problemsDom = new JSDOM(htmlString);
+      let problems = [
+        ...problemsDom.window.document.querySelectorAll(
+          'table td:not([class]) > a'
+        ),
+      ];
+      console.log(problems);
+      return problems.map((problem) => {
+        vscode.window.showInformationMessage(problem.textContent);
+        return new vscode.TreeItem(problem.textContent);
+      });
     },
   };
 }
@@ -33,7 +50,7 @@ function activate(context) {
               'atcoder-assistant.contest',
               contestId
             );
-            // create tree
+
             vscode.window.registerTreeDataProvider(
               'atcoder-problems',
               atcoderProblemTreeProvider(contestId)
