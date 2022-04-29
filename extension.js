@@ -9,9 +9,13 @@ function atcoderProblemTreeProvider(contestId) {
       return element;
     },
     getChildren: async () => {
-      const response = await got(
-        `https://atcoder.jp/contests/${contestId}/tasks`
-      );
+      let response;
+      try {
+        response = await got(`https://atcoder.jp/contests/${contestId}/tasks`);
+      } catch (error) {
+        vscode.window.showErrorMessage(`Faild to fetch: ${error.message}`);
+        return [];
+      }
       const htmlString = response.body;
       const problemsDom = new JSDOM(htmlString);
       let problems = [
