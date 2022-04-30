@@ -66,10 +66,14 @@ function activate(context) {
               contestId
             );
 
-            vscode.window.registerTreeDataProvider(
+            const problemTree = vscode.window.createTreeView(
               'atcoder-problems',
-              atcoderProblemTreeProvider(contestId)
+              {
+                treeDataProvider: atcoderProblemTreeProvider(contestId),
+              }
             );
+
+            problemTree.description = contestId;
           }
         });
     }
