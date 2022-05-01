@@ -10,27 +10,10 @@
     "Other"
   ],
   "activationEvents": [
-    "onCommand:atcoder-assistant.helloWorld",
-    "onCommand:atcoder-assistant.startContest"
+    "*"
   ],
   "main": "./extension.js",
   "contributes": {
-    "properties": {
-      "atcoder-assistant": {
-        "description": "Atcoder contest",
-        "type": "string"
-      }
-    },
-    "commands": [
-      {
-        "command": "atcoder-assistant.helloWorld",
-        "title": "Hello World"
-      },
-      {
-        "command": "atcoder-assistant.startContest",
-        "title": "Start Contest"
-      }
-    ],
     "viewsContainers": {
       "activitybar": [
         {
@@ -43,48 +26,12 @@
     "views": {
       "aca": [
         {
-          "id": "atcoder-contest",
-          "name": "コンテスト"
-        },
-        {
-          "id": "atcoder-testcases",
-          "name": "テストケース"
-        },
-        {
-          "id": "atcoder-submissions",
-          "name": "提出履歴"
-        },
-        {
-          "id": "atcoder-problems",
-          "name": "問題一覧"
+          "type": "webview",
+          "id": "atcoder-assistant.testcases",
+          "name": "Input Test"
         }
       ]
-    },
-    "viewsWelcome": [
-      {
-        "view": "atcoder-contest",
-        "contents": "まだコンテストに参加していません。\n[コンテストを開始](command:atcoder-assistant.startContest)",
-        "when": "!atcoder-assistant.contest"
-      },
-      {
-        "view": "atcoder-contest",
-        "contents": "コンテストに参加中です。\n[コンテストを終了](command:atcoder-assistant.endContest)",
-        "when": "atcoder-assistant.contest"
-      },
-      {
-        "view": "atcoder-testcases",
-        "contents": "テストケースがありません。\n[テストケースを登録する](command:atcoder-assistant.createTestcase)"
-      },
-      {
-        "view": "atcoder-submissions",
-        "contents": "まだ提出していません。\n[提出する](command:atcoder-assistant.submit)"
-      },
-      {
-        "view": "atcoder-problems",
-        "contents": "コンテストに参加してください。",
-        "when": "!atcoder-assistant.contest"
-      }
-    ]
+    }
   },
   "scripts": {
     "lint": "eslint .",

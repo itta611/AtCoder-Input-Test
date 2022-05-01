@@ -3,96 +3,73 @@ const jsdom = require('jsdom');
 const { JSDOM } = jsdom;
 const got = require('got');
 
-function atcoderProblemTreeProvider(contestId) {
-  return {
-    getTreeItem: (element) => {
-      return element;
-    },
-    getChildren: async () => {
-      let response;
-      try {
-        response = await got(`https://atcoder.jp/contests/${contestId}/tasks`);
-      } catch (error) {
-        vscode.window.showErrorMessage(`Faild to fetch: ${error.message}`);
-        return [];
-      }
-      const htmlString = response.body;
-      const problemsDom = new JSDOM(htmlString);
-      let problems = [
-        ...problemsDom.window.document.querySelectorAll(
-          'table td:not([class]) > a'
-        ),
-      ];
-      let problemId = [
-        ...problemsDom.window.document.querySelectorAll(
-          'table td:first-child > a'
-        ),
-      ];
-      return problems.map((problem, i) => {
-        let treeItem = new vscode.TreeItem(
-          `${problemId[i].textContent}: ${problem.textContent}`
-        );
-        treeItem.command = {
-          command: 'vscode.open',
-          title: 'Open in browser',
-          arguments: [vscode.Uri.parse(`https://atcoder.jp${problem.href}`)],
-        };
-        return treeItem;
-      });
-    },
-  };
+async function fetchTestcase(URL) {
+  let response;
+  try {
+    response = await got(URL);
+  } catch (error) {
+    vscode.window.showErrorMessage(`Faild to fetch: ${error.message}`);
+    return;
+  }
+  const htmlString = response.body;
+  const problemsDom = new JSDOM(htmlString);
+  let problems = [
+    ...problemsDom.window.document.querySelectorAll(
+      '.part:nth-child(n+3):nth-child(odd) .pre'
+    ),
+  ];
+  problems.map((problem) => {
+    return problem.innerHTML;
+  });
+  return problems;
 }
 
 function activate(context) {
-  const startContest = vscode.commands.registerCommand(
-    'atcoder-assistant.startContest',
-    function () {
-      vscode.window
-        .showInputBox({
-          placeHolder: 'Contest ID (e.g. abc123)',
-          ignoreFocusOut: true,
-          validateInput: (value) => {
-            if (!value) {
-              return 'Contest ID is required.';
-            }
-            return null;
-          },
-        })
-        .then((contestId) => {
-          if (contestId) {
-            vscode.commands.executeCommand(
-              'setContext',
-              'atcoder-assistant.contest',
-              contestId
-            );
+  const provider = new WebViewProvider(context.extensionUri);
 
-            const problemTree = vscode.window.createTreeView(
-              'atcoder-problems',
-              {
-                treeDataProvider: atcoderProblemTreeProvider(contestId),
-              }
-            );
-
-            problemTree.description = contestId;
-          }
-        });
-    }
+  console.log('eh');
+  context.subscriptions.push(
+    vscode.window.registerWebviewViewProvider(
+      'atcoder-assistant.testcases',
+      provider
+    )
   );
-
-  const quitContest = vscode.commands.registerCommand(
-    'atcoder-assistant.quitContest',
-    function () {
-      vscode.commands.executeCommand(
-        'setContext',
-        'atcoder-assistant.contest',
-        null
-      );
-    }
-  );
-  context.subscriptions.push(startContest);
-  context.subscriptions.push(quitContest);
 }
 
+class WebViewProvider {
+  constructor(extensionUri) {
+    this._extensionUri = extensionUri;
+  }
+
+  resolveWebviewView(webviewView, context, _token) {
+    this._view = webviewView;
+    webviewView.webview.options = {
+      // Allow scripts in the webview
+      enableScripts: true,
+
+      localResourceRoots: [this._extensionUri],
+    };
+    webviewView.webview.html = this._getHtmlForWebview();
+  }
+
+  _getHtmlForWebview() {
+    return `<!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Testcases</title>
+    </head>
+    <body>
+        <div id="root">
+            <div id="testcases">
+                <div id="testcases-content"></div>
+            </div>
+        </div>
+    </body>
+    </html>`;
+  }
+}
 module.exports = {
   activate,
 };
