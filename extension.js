@@ -34,7 +34,7 @@ function activate(context) {
 
   context.subscriptions.push(
     vscode.window.registerWebviewViewProvider(
-      'atcoder-assistant.testcases',
+      'atcoder-input-test.testcases',
       provider
     )
   );

@@ -1,6 +1,6 @@
 {
-  "name": "atcoder-assistant",
-  "displayName": "Atcoder Assistant",
+  "name": "atcoder-input-test",
+  "displayName": "Atcoder Input Test",
   "description": "",
   "version": "0.0.1",
   "engines": {
@@ -10,7 +10,7 @@
     "Other"
   ],
   "activationEvents": [
-    "onView:atcoder-assistant.testcases",
+    "onView:atcoder-input-test.testcases",
     "onDebug"
   ],
   "main": "./extension.js",
@@ -19,7 +19,7 @@
       "activitybar": [
         {
           "id": "aca",
-          "title": "AtCoder Assistant",
+          "title": "AtCoder Input Test",
           "icon": "media/logo_wh.svg"
         }
       ]
@@ -28,7 +28,7 @@
       "aca": [
         {
           "type": "webview",
-          "id": "atcoder-assistant.testcases",
+          "id": "atcoder-input-test.testcases",
           "name": "Input Test"
         }
       ]
