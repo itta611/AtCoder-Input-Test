@@ -1,0 +1,21 @@
+body {
+  background-color: transparent;
+}
+
+vscode-button {
+  margin-top: 20px;
+}
+
+vscode-divider {
+  margin-top: 15px;
+  margin-bottom: 15px;
+}
+
+#testcases-list {
+  margin-top: 15px;
+  margin-bottom: 15px;
+}
+
+#testcases-list > .testcase + .testcase {
+  margin-top: 15px;
+}
