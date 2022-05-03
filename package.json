@@ -3,6 +3,20 @@
   "displayName": "Atcoder Input Test",
   "description": "",
   "version": "0.0.1",
+  "author": "Itta Funahashi",
+  "publisher": "ittaFunahashi",
+  "contributors": [
+    "Itta Funahashi"
+  ],
+  "keywords": [
+    "atcoder",
+    "input",
+    "test"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/itta611/AtCoder-Input-Test"
+  },
   "engines": {
     "vscode": "^1.66.0"
   },
