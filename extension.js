@@ -4,7 +4,7 @@ const jsdom = require('jsdom');
 const { JSDOM } = jsdom;
 const got = require('got');
 
-let testcases = [];
+let testcases = {};
 let debugCnt = 0;
 
 function activate(context) {
@@ -12,18 +12,23 @@ function activate(context) {
 
   vscode.debug.onDidStartDebugSession(() => {
     let terminal = vscode.window.activeTerminal;
-    if (terminal && testcases.length > 0) {
+    if (terminal && Object.keys(testcases).length > 0) {
       terminal.show();
-      terminal.sendText(testcases[debugCnt].value + '\n');
+      console.log(testcases);
+      terminal.sendText(
+        testcases[Object.keys(testcases)[debugCnt]].trim() + '\n'
+      );
     }
   });
 
   vscode.debug.onDidTerminateDebugSession(() => {
-    if (debugCnt == testcases.length - 1) {
-      debugCnt = 0;
-    } else {
-      debugCnt++;
-      vscode.debug.startDebugging();
+    if (Object.keys(testcases).length > 0) {
+      if (debugCnt == Object.keys(testcases).length - 1) {
+        debugCnt = 0;
+      } else {
+        debugCnt++;
+        vscode.debug.startDebugging();
+      }
     }
   });
 
@@ -36,7 +41,7 @@ function activate(context) {
 }
 
 function addTestcaseList(id, testcase) {
-  testcases.push({ id: id, value: testcase });
+  testcases[id] = testcase;
 }
 
 class WebViewProvider {
@@ -59,16 +64,23 @@ class WebViewProvider {
       switch (message.type) {
         case 'fetchTestcases':
           this._fetchTestcases(webviewView, message.value);
-          addTestcaseList(message.id, message.value);
           break;
         case 'addTestcase':
           addTestcaseList(message.id, message.value);
+          console.log('addTestcase');
+          console.log({ ...testcases });
           break;
         case 'getTestcases':
           this._view.webview.postMessage({
             type: 'getTestcases',
             value: testcases,
           });
+          break;
+        case 'removeTestcase':
+          delete testcases[message.id];
+          break;
+        case 'updateTestcase':
+          testcases[message.id] = message.value;
           break;
       }
     });

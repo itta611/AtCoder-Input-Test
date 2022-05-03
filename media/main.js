@@ -14,19 +14,21 @@ urlLoadButton.addEventListener('click', async () => {
 });
 
 testcaseAddBtn.addEventListener('click', () => {
-  const testcase = testcaseAddTextarea.value;
-  testcaseAddTextarea.value = '';
-  addTestcaseList(testcase);
+  if (testcaseAddTextarea.value.trim() != '') {
+    const testcase = testcaseAddTextarea.value;
+    testcaseAddTextarea.value = '';
+    addTestcaseList(testcase);
+  }
 });
 
 function addTestcaseList(testcase) {
   addTestcaseListDom(testcase);
-  testCaseCnt++;
   vscode.postMessage({
     type: 'addTestcase',
     value: testcase,
-    index: testCaseCnt,
+    id: testCaseCnt,
   });
+  testCaseCnt++;
 }
 
 function addTestcaseListDom(testcase, index) {
@@ -36,13 +38,21 @@ function addTestcaseListDom(testcase, index) {
   textarea.dataset.index = index ?? testCaseCnt;
   testcasesList.appendChild(textarea);
   textarea.value = textarea.value.trim() + '\n';
-  textarea.addEventListener('input', () => {
-    textarea.value = textarea.value.trim() + '\n';
-    vscode.postMessage({
-      type: 'updateTestcase',
-      value: textarea.value,
-      index: textarea.dataset.index,
-    });
+  textarea.addEventListener('change', () => {
+    if (textarea.value.trim() == '') {
+      testcasesList.removeChild(textarea);
+      vscode.postMessage({
+        type: 'removeTestcase',
+        id: textarea.dataset.index,
+      });
+    } else {
+      textarea.value = textarea.value.trim() + '\n';
+      vscode.postMessage({
+        type: 'updateTestcase',
+        value: textarea.value,
+        id: textarea.dataset.index,
+      });
+    }
   });
 }
 
@@ -55,9 +65,10 @@ window.addEventListener('message', (event) => {
       }
       break;
     case 'getTestcases':
-      for (const testcase of message.value) {
-        addTestcaseListDom(testcase.value, testcase.index);
-      }
+      testcases = message.value;
+      Object.keys(testcases).forEach((key) => {
+        addTestcaseListDom(testcases[key], key);
+      });
       break;
   }
 });
