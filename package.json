@@ -63,6 +63,7 @@
   "dependencies": {
     "@vscode/webview-ui-toolkit": "^1.0.0",
     "jsdom": "^19.0.0",
-    "node-fetch": "^3.2.4"
+    "node-fetch": "^3.2.4",
+    "got": "^11.0"
   }
 }
